@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - G-ON</title>
+    <link rel="icon" href="~/img/logo/G.svg" type="image/x-icon">
+
+    <link rel="stylesheet" href="/assets/css/bootstrap.css" asp-append-version="true">
+    <link rel="stylesheet" href="/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="/assets/css/app.css" asp-append-version="true">
+
+    <link rel="stylesheet" href="~assets/css/Index.css"  asp-append-version="true">
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true">
+
+    <link rel="stylesheet" href="/lib/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="/lib/fontawesome/6.1.1/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <div id="sidebar" class='active'>
+            @await Component.InvokeAsync("SidebarMenu")
+        </div>
+        @await Component.InvokeAsync("TopMenu")   
+        <div id="main" class="main">                    
+            <div class="main-content container-fluid">
+                @RenderBody()
+            </main>
+        </div>
+       
+    </div>
+
+    <script src="~/assets/js/feather-icons/feather.min.js"></script>
+    <script src="~/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="~/assets/js/main.js"></script>
+    <script src="~/assets/js/app.js"></script>
+</body>
+</html>

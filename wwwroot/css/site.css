@@ -1,0 +1,106 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+a:link {
+    text-decoration: none;
+}
+.d-lg-inline-block {
+    position: relative !important;
+}
+
+.indicator {
+    background: #3b7ddd;
+    border-radius: 50%;
+    box-shadow: 0 0.1rem 0.2rem rgb(0 0 0 / 5%);
+    color: #fff;
+    display: block;
+    font-size: .675rem;
+    height: 20px;
+    padding: 1px;
+    position: absolute;
+    right: -8px;
+    text-align: center;
+    top: 0;
+    transition: top .1s ease-out;
+    width: 20px;
+}
+
+.navbar.navbar-header .dropdown > a svg {
+    height: 34px !important;
+}
+
+
+.a-group {
+    color: black; 
+    opacity:0.764;
+}
+
+.fullName {
+    color: black;
+    opacity:0.764;
+}
+
+.avatar {
+   
+    float: left;
+    display: inline-block;
+}
+
+
+
+.dot {
+    float: left;
+    height: 34px;
+    width: 34px;
+    background-color: #bbb;
+    border-radius: 50%;
+    margin: auto;
+    text-align: center;
+  
+}
+
+
+
+#head {
+    padding:8px 0;
+}
+
+.col-md-12{
+    padding-bottom:8px;
+    padding-top:8px;
+}
+
+#listusers{
+    padding: 0 8px;
+    
+
+
+
+}
+.user-member {
+    display: flex;
+}
+
+.avatar {
+    margin: auto 0;
+}
+
+.datepicker-orient-bottom{
+  
+}
+

@@ -1,0 +1,57 @@
+﻿@model (string sHome, string sInfo, string sApp, string sUser, string sGroup, string sLogout, string sUserName)
+
+@{
+    string CheckActiveMenu(string route)
+    {
+        return (ViewContext.RouteData.Values["route"] != null && ViewContext.RouteData.Values["route"].ToString().ToLower() == route) ? "active" : (ViewContext.RouteData.Values["route"] == null && route == "" ? "active" : "");
+    }
+}
+ <div class="sidebar-wrapper active">
+    <div class="sidebar-header">
+        <img src="/img/logo/GOn.svg" alt="" srcset="">
+    </div>
+    <div class="sidebar-menu">
+        <ul class="menu">
+            <li class="sidebar-item @CheckActiveMenu("")">
+                <a href="/" class="sidebar-link">
+                    <i data-feather="home" width="20"></i> 
+                    <span>@{WriteLiteral(Model.sHome);}</span>
+                </a>
+            </li>
+            <li class="sidebar-item @CheckActiveMenu("user")">
+                <a href="/user/@Model.sUserName" class="sidebar-link">
+                    <i data-feather="user" width="20"></i> 
+                    <span>@{WriteLiteral(Model.sInfo);}</span>
+                </a>
+            </li>
+            <li class="sidebar-item @CheckActiveMenu("users")">
+                <a href="/users" class="sidebar-link">
+                    <i data-feather="users" width="20"></i> 
+                    <span>@{WriteLiteral(Model.sUser);}</span>
+                </a>
+            </li>
+            <li class="sidebar-item @CheckActiveMenu("groups")">
+                <a href="/groups" class="sidebar-link">
+                    <i data-feather="grid" width="20"></i> 
+                    <span>@{WriteLiteral(Model.sGroup);}</span>
+                </a>
+            </li>
+            <li class="sidebar-item @CheckActiveMenu("apps")">
+                <a href="/apps" class="sidebar-link">
+                    <i data-feather="layers" width="20"></i> 
+                    <span>@{WriteLiteral(Model.sApp);}</span>
+                </a>
+            </li>
+           
+            <hr>
+            <li class="sidebar-item">
+                <a href="/logout" class="sidebar-link">
+                    <i data-feather="log-out" width="20"></i> 
+                    <span>@{WriteLiteral(Model.sLogout);}</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+</div>

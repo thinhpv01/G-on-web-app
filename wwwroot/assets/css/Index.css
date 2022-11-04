@@ -1,0 +1,61 @@
+﻿.user-member {
+    display: flex;
+}
+
+.avatar-list {
+    margin: auto 0;
+    width: 20%;
+}
+.text {
+    display: inline-block;
+    padding-left: 8px;
+}
+
+th {
+    padding: 13px 0;
+}
+
+td {
+    padding: 13px 0;
+}
+
+
+.list-group__body {
+    display: block;
+
+}
+
+.list-group {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: stretch;
+}
+.bt {
+    display: inline-block;
+    margin: auto 0;
+}
+
+.display-inline-block {
+    display: inline-block;
+}
+
+.fa-regular, .far {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 400;
+}
+
+.display-flex{
+    display: flex;
+}
+.form-check {
+    display: flex;
+    justify-content: space-between;
+    margin:4px 0;
+    padding-left:0;
+}
+
+.fullName-userGroup {
+    display: inline-block;
+    margin:0 auto;
+}

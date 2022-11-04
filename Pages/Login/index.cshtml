@@ -1,0 +1,78 @@
+﻿@page
+@model G_ON_WEBAPP.Pages.Login.IndexModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.sTitleLogin - G-ON</title>
+    <link rel="icon" href="img/logo/G.svg" type="image/x-icon">
+
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    
+    <link rel="stylesheet" href="assets/css/app.css">
+</head>
+
+<body>
+    <div id="auth">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5 col-sm-12 mx-auto">
+                    <div class="card pt-4">
+                        <div class="card-body">
+                            <div class="text-center mb-5">
+                                <img src="img/logo/g.svg" height="60" class='mb-4'>
+                                <h3>@Model.sTitleLogin</h3>
+                                <p>@Model.sContentLogin</p>
+                            </div>
+                            <form method="post">
+                                <div class="form-group position-relative has-icon-left">
+                                    <label for="username">Email</label>
+                                    <div class="position-relative">
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                                        <div class="form-control-icon">
+                                            <i data-feather="mail"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group position-relative has-icon-left">
+                                    <div class="clearfix">
+                                        <label for="password">@Model.sPassword</label>
+                                    </div>
+                                    <div class="position-relative">
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="@Model.sPassword">
+                                        <div class="form-control-icon">
+                                            <i data-feather="lock"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="float-left">
+                                    <a href="auth-forgot-password.html">@Model.sForgotPassword</a>
+                                </div>
+                                <br />
+                                @if(Request.Method.ToUpper() == "POST" && !string.IsNullOrWhiteSpace(Model.msg))
+                                {
+                                    <p class="text-danger text-center">@Model.msg</p>
+                                }
+                                else
+                                {<br />}
+                                <div class="float-right">
+                                    <button type="submit" class="btn btn-primary"><i data-feather="power"></i> @Model.sSubmit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/feather-icons/feather.min.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>
+

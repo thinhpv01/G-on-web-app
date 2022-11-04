@@ -1,0 +1,784 @@
+﻿@page "{route?}/{data?}"
+@using G_ON_WEBAPP.Services
+@model IndexModel
+
+@{
+    if (Model.Route == "apps")
+    {
+        foreach (var app in Model.Apps)
+        {
+            try
+            {
+    <div class="card">
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    <a href="@app.appURL" target="_blank"><img class="img-logo" src="@app.appIcon"></a>
+                                </div>
+                                <div class="col-sm-11">
+                                    <div class="card-header">
+                                        <a href="@app.appURL" target="_blank"><h4 class="card-title">@TranslationService.GetText(Model.trans_g_on,app.appName)</h4></a>
+                                    </div>
+
+                                    <div class="card-body">
+                                        <a href="@app.appURL" class="card-link" target="_blank">@app.appURL.Split("//")[1]</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between">
+                                <span>@TranslationService.GetText(Model.trans_g_on,"g_on_app_expiry_date") : @app.expiryDate.ToString("dd/MM/yyyy")</span>
+                            </div>
+    </div>
+            }
+            catch { }
+        }
+    }
+    else if (Model.Route == "user")
+    {
+    <div class="container rounded bg-white mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-md-3 border-right">
+                            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                                <img class="rounded-circle mt-5" width="150px" src="/img/profile.jpg">
+                                <span class="font-weight-bold">@Model.User.lastName @Model.User.firstName</span>
+                                <span class="text-black-50">
+                                    @if (@Model.JobTitleModel != null)
+                            {
+                                        @Model.JobTitleModel.titleName
+                            }
+                                </span>
+                                <span> </span>
+                            </div>
+                        </div>
+                        <div class="col-md-5 border-right">
+                            <div class="p-3 py-5">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="text-right">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_user_thong_tin_nhan_su")</h4>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-12">
+                                        <label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_user_quan_ly_truc_tiep")</label><br>
+                                        @*<span class="text-black-50">@Model.User.address</span>*@
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_nhom")</label><br>
+                                        @{
+                                    if (Model.Groups != null)
+                                    {
+                                        foreach (var group in Model.Groups)
+                                        {
+                                                            <a href="/groups/@group.groupName" class="font-weight-bold"> <span>@group.groupName </span></a>
+
+                                                            <br>
+                                        }
+                                    }
+                                        }
+
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_user_nhan_vien_truc_tiep")</label><br>
+                                        @*<span class="text-black-50">@Model.User.address</span>*@
+                                    </div>
+                                </div>
+                                @if ((long.Parse(@Model.sUserID)) == @Model.User.userID || (int.Parse(@Model.sUserRoleID)) <= 2)
+                        {
+                                    <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button" data-toggle="modal" data-target="#updateUserModal">Chỉnh sửa tài khoản</button></div>
+                        }
+                            </div>
+                        </div>
+                        <div class="col-md-4 border-right">
+                            <div class="p-3 py-5">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="text-right">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_user_thong_tin_lien_lac")</h4>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-md-12">
+                                        <label class="labels">Email: </label>
+                                        <span class="font-weight-bold">@Model.User.email</span>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_user_so_dien_thoai"):</label>
+                                        <span class="font-weight-bold">@Model.User.phone</span>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_dia_chi"):</label><br>
+                                        <span class="font-weight-bold" style="  word-wrap: break-word;">@Model.User.address</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    </div>
+
+        //class="modal fade"
+    <div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+
+                    <div class="modal-dialog modal-dialog-center" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+
+                                <form method="post">
+                                    <div class="modal-header">
+
+
+                                        <h4 class="text-left modal-title">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_setting_chinh_sua_thong_tin_ca_nhan")</h4>
+
+
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                                        <span aria-hidden="true">&times;</span>
+
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <div class="row mt-2">
+                                            <div class="col-md-6"><label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_ho")</label><input type="text" class="form-control" asp-for="User.lastName"></div>
+                                            <div class="col-md-6"><label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_ten")</label><input type="text" class="form-control " asp-for="User.firstName"></div>
+                                        </div>
+
+                                        <div class="row mt-2">
+                                            @if ((int.Parse(@Model.sUserRoleID)) <= 2)
+                                    {
+
+                                                <div class="col-md-12">
+                                                    <label class="labels">Email</label>
+                                                    <input type="text" class="form-control" asp-for="User.email">
+
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label class="labels">UserName</label>
+                                                    <input type="text" class="form-control" asp-for="User.userName">
+                                                </div>
+                                    }
+                                    else
+                                    {
+                                                <input type="hidden" asp-for="User.email" />
+
+                                    }
+                                            <div class="col-md-12">
+                                                <label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_setting_ngay_sinh")</label>
+                                                <div class="input-group date" id="datepicker" style=" display:flex; justify-content:space-between;">
+                                                    <input type="date" class="form-control" asp-for="User.dateOfBirth" placeholder="dd-mm-yyyy" style="width:80%">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12"><label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_user_so_dien_thoai")</label><input type="text" class="form-control" asp-for="User.phone"></div>
+                                            <div class="col-md-12"><label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_dia_chi")</label><textarea type="text" class="form-control" asp-for="User.address"></textarea></div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="mt-5 text-center">
+                                            <button class="btn btn-primary profile-button" type="submit">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_setting_cap_nhat")</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">@TranslationService.GetText(Model.trans_g_on,"g_on_dong")</button>
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" asp-for="User.titleID" />
+                                </form>
+
+                            </div>
+                            @*   <div class="container rounded bg-white mt-5 mb-5">
+                        <div class="row">
+                        <div class="col-md-5" style="width:50%">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="col-md-5" style="width:50%">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="modal-dialog modal-dialog-centered" role="document" style="width:100%">
+                        <div class="modal-content">
+                        <div class="modal-header">
+
+                        <form method="post">
+                        <div class="col-md-12">
+                        <h4 class="text-left">Phân quyền</h4>
+                        </div>
+                        @foreach (var item in Model.userRoles)
+                        {
+                        <div class="row mt-2">
+
+                        <div class="col-md-12">
+                        <label class="labels">@item.AppCode</label>
+                        <select class="form-select" aria-label="Default select example">
+                        @foreach(var role in Model.RolesList){
+                        @if (role.roleID == item.RoleID)
+                        {
+                        <option selected value="@role.roleID">@role.roleName</option>
+                        }else
+                        {
+                        <option value="@role.roleID">@role.roleName</option>
+                        }
+                        }
+                        </select>
+                        </div>
+                        </div>
+                        }
+                        </form>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                        </div>*@
+                        </div>
+                    </div>
+    </div>
+    }
+
+    else if (Model.Route == "users")
+    {
+    <div id="listusers" class="container rounded bg-white mt-5 mb-5">
+                    <div class="border-bottom container" style="padding:8px 0; display:flex; justify-content:space-between">
+                        <div class="input" style=" display: inline-block; ">
+                            <input type="text" placeholder="@TranslationService.GetText(Model.trans_g_on,"g_on_tim_thanh_vien")" id="network-search-ip" style="border:0;height:100%;">
+                        </div>
+                        @if ((int.Parse(@Model.sUserRoleID)) == 1)
+                {
+                            <div class="text-center" style="display: inline-block; "><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#createUserModal">@TranslationService.GetText(Model.trans_g_on,"g_on_tao_tai_khoan")</button></div>
+                }
+                    </div>
+                    <table id="list-user" style="width:100%">
+                        <thead>
+
+                            <tr class="border-bottom">
+                                <th style="width:30% ">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_user_ho_va_ten")</th>
+                                <th style="width:30%">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_user_thong_tin_lien_lac")</th>
+                                <th style="width:30%">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_user_nhan_vien_truc_tiep")</th>
+                                <th style="width:10%">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in @Model.Users)
+                    {
+                                <tr class="border-bottom">
+                                    <td>
+                                        <div class="user-member">
+                                            <div class="avatar avatar-list">
+                                                <img src="/img/profile.jpg" class="img-avatar">
+
+                                            </div>
+                                            <div class=text>
+                                                <div>  <a href=/user/@item.userName> <b class="fullName">@item.lastName @item.firstName</b></a></div>
+                                                <div>
+                                                    <b> @item.tag</b>&nbsp;·&nbsp;
+                                                    @{
+                                                WriteLiteral(Model.GetTitleNamex(item.titleID));
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="li ap-xdot">@item.email</div>
+                                        <div class="li ap-xdot">@item.phone</div>
+
+                                        <div class="li ap-xdot">
+                                            @{
+                                        WriteLiteral(item.dateOfBirth != null ? item.dateOfBirth.Value.ToString("dd/MM/yyyy") : "n/a");
+                                            }
+                                        </div>
+
+
+
+                                    </td>
+                                    <td>
+                                        <div class="user-member">
+                                            <div class="avatar avatar-list">
+                                                <img src="/img/profile.jpg">
+
+                                            </div>
+                                            <div class=text>
+                                                <div>  <a href=/user/@item.userName> <b class="fullName">@item.lastName @item.firstName</b></a></div>
+                                                <div>
+                                                    <b> @item.tag</b>&nbsp;·&nbsp; IT Staff
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    @if ((int.Parse(@Model.sUserRoleID)) == 1)
+                            {
+                                        <td>    <div class="text-center"><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#@Model.getString($"deleteUserModal{item.userName}")">@TranslationService.GetText(Model.trans_g_on,"g_on_xoa_tai_khoan")</button></div> </td>
+                                        <div class="modal fade" id=@Model.getString($"deleteUserModal{item.userName}") tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <form method="post" asp-page-handler="DeleteUserPage">
+                                                        <input type="hidden" asp-for="userID" value="@item.userID" />
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">@TranslationService.GetText(Model.trans_g_on,"g_on_xoa_tai_khoan")</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">@TranslationService.GetText(Model.trans_g_on,"g_on_thong_bao_xac_nhan_xoa") @item.email</div>
+
+                                                        <div class="modal-footer">
+
+                                                            <button type="submit" class="btn btn-primary">@TranslationService.GetText(Model.trans_g_on,"g_on_xoa")</button>
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">@TranslationService.GetText(Model.trans_g_on,"g_on_dong")</button>
+
+                                                        </div>
+                                                    </form>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                            }
+                                </tr>
+
+                    }
+                        </tbody>
+                    </table>
+
+    </div>
+    <div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+
+                                <form method="post" asp-page-handler="CreateUserPage">
+                                    <div class="modal-header">
+                                        <h4 class="text-left modal-title">@TranslationService.GetText(Model.trans_g_on,"g_on_tao_tai_khoan")</h4>
+
+
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <div class="row mt-2">
+                                            <div class="col-md-6"><label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_ho")</label><input type="text" class="form-control" asp-for="User.lastName"></div>
+                                            <div class="col-md-6"><label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_ten")</label><input type="text" class="form-control " asp-for="User.firstName"></div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-md-12">
+                                                <label class="labels">Email</label>
+                                                <input type="text" class="form-control" asp-for="User.email">
+
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label class="labels">UserName</label>
+                                                <input type="text" class="form-control" asp-for="User.userName">
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <label class="labels">@TranslationService.GetText(Model.trans_g_on,"g_on_login_mat_khau")</label>
+                                                <input type="password" class="form-control" asp-for="User.passwordHash">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer ">
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-primary" onclick="history.go(-1)">@TranslationService.GetText(Model.trans_g_on,"g_on_tao_tai_khoan")</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">@TranslationService.GetText(Model.trans_g_on,"g_on_dong")</button>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+    </div>
+
+
+
+    }
+
+    else if (Model.Route == "groups" && RouteData.Values["data"] == null)
+    {
+    <div class="container rounded bg-white mt-5 mb-5">
+                    <div class="border-bottom container" style="padding:8px 0; display:flex; justify-content:space-between">
+                        <div class="input" style=" display: inline-block; ">
+                            <input type="text" placeholder="@TranslationService.GetText(Model.trans_g_on,"g_on_menu_group")" id="network-search-ip" style="border:0;height:100%;">
+                        </div>
+                        @if ((int.Parse(@Model.sUserRoleID)) == 1)
+                {
+                            <div class="text-center" style="display: inline-block; "><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#createGroupModal"><i class="fa-solid fa-circle-plus"></i></button></div>
+
+                }
+                    </div>
+                    <div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+
+                                    <form method="post">
+                                        <div class="modal-header">
+                                            <h4 class="text-left modal-title">@TranslationService.GetText(Model.trans_g_on,"g_on_tao_nhom")</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="modal-body">
+
+                                            <div class="row mt-2">
+                                                <div class="col-md-12">
+                                                    <label class="labels">Tên Nhóm</label>
+                                                    <input type="text" class="form-control" asp-for="GroupModel.groupName">
+
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label class="labels">Tag nhóm</label>
+                                                    <input type="text" class="form-control" asp-for="GroupModel.tag">
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer ">
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-primary">@TranslationService.GetText(Model.trans_g_on,"g_on_tao_nhom")</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">@TranslationService.GetText(Model.trans_g_on,"g_on_dong")</button>
+
+                                            </div>
+                                        </div>
+                                    </form>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    @foreach (var item in @Model.Groups)
+            {
+                        <div>
+
+                            <div id="head" class="list-group border-bottom">
+
+                                <div class="list-group__body">
+                                    <a href="/groups/@item.groupName"> <b class="a-group">@item.groupName</b></a><br>
+                                    <label><b>@item.tag</b></label><br>
+                                    <label>5 thành viên</label>
+                                </div>
+                                     @if ((int.Parse(@Model.sUserRoleID)) == 1)
+                        {
+                                    <div class="bt">
+                                        <div class="bt-update display-inline-block btn-warning btn" data-toggle="modal" data-target="#@Model.getString($"updateGroupModal{item.groupID}")">
+                                            <i class="fa-regular fa-pen-to-square"></i>
+                                        </div>
+                                        <div class="bt-update display-inline-block btn-danger btn" data-toggle="modal" data-target="#@Model.getString($"deleteGroupModal{item.groupID}")">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </div>
+                                        @*<div class="bt-delete display-inline-block"><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#@Model.getString($"deleteUserModal{item.groupTypeID}")">@TranslationService.GetText(Model.jArray,"g_on_xoa_nhom")</button>
+                                    </div> *@
+                                    </div>
+                                    <div class="modal fade" id=@Model.getString($"deleteGroupModal{item.groupTypeID}") tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <form method="post">
+                                                    <input type="hidden" asp-for="groupID" value="@item.groupID" />
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">@TranslationService.GetText(Model.trans_g_on,"g_on_xoa_nhom")</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">@TranslationService.GetText(Model.trans_g_on,"g_on_thong_bao_xac_nhan_xoa") @item.groupName</div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-primary" asp-page-handler="DeleteGroupPage">@TranslationService.GetText(Model.trans_g_on,"g_on_xoa")</button>
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">@TranslationService.GetText(Model.trans_g_on,"g_on_dong")</button>
+
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id=@Model.getString($"updateGroupModal{item.groupID}") tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <form method="post">
+                                                    <div class="modal-header">
+                                                        <h4 class="text-left modal-title">@TranslationService.GetText(Model.trans_g_on,"g_on_tao_nhom")</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+
+                                                        <div class="row mt-2">
+                                                            <div class="col-md-12">
+                                                                <label class="labels">Tên Nhóm</label>
+                                                                <input type="text" class="form-control" asp-for="GroupModel.groupName" value="@item.groupName">
+
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <label class="labels">Tag nhóm</label>
+                                                                <input type="text" class="form-control" asp-for="GroupModel.tag" value="@item.tag">
+                                                            </div>
+
+                                                            <input type="hidden" asp-for="GroupModel.groupID" value="@item.groupID" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer ">
+                                                        <div class="text-center">
+                                                            <button type="submit" class="btn btn-primary" asp-page-handler="UpdateGroupPage">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_setting_cap_nhat")</button>
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">@TranslationService.GetText(Model.trans_g_on,"g_on_dong")</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    }
+                            </div>
+                        </div>
+            }
+    </div>
+    }
+    else if (Model.Route == "groups" && RouteData.Values["data"] != null)
+    {
+    <div id="listusers" class="container rounded bg-white mt-5 mb-5">
+                    <div class="border-bottom container" style="padding:8px 0; display:flex; justify-content:space-between">
+                        <div class="input" style=" display: inline-block; ">
+                            <input type="text" placeholder="@TranslationService.GetText(Model.trans_g_on,"g_on_tim_thanh_vien")" id="network-search-ip" style="border:0;height:100%;">
+                        </div>
+                        @if ((int.Parse(@Model.sUserRoleID)) == 1)
+                {
+                            <div class="text-center display-inline-block "><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addUserGroupModal">@TranslationService.GetText(Model.trans_g_on,"g_on_them_thanh_vien")</button></div>
+                            <div class="modal fade" id="addUserGroupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <form method="post" asp-page-handler="AddUserGroup">
+                                            <input type="hidden" asp-for="groupID" value="@Model.GroupModel.groupID" />
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">@TranslationService.GetText(Model.trans_g_on,"g_on_them_thanh_vien")</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                @foreach (var item in @Model.UserGroupFillter())
+                                        {
+                                                    <div class="form-check form-check-css">
+
+                                                        <label class=" user-member form-check-label display-inline-block" for=@Model.getString($"flexCheckDefault{item.userID}")>
+
+                                                            <div class="avatar ">
+                                                                <img src="/img/profile.jpg" class="img-avatar">
+
+                                                            </div>
+                                                            <div class="text-center fullName-userGroup ">
+                                                                <b class="fullName">@item.lastName @item.firstName</b>
+
+                                                            </div>
+                                                        </label>
+
+                                                        <input class="form-check-input display-inline-block " type="checkbox" name="id" value="@item.userID" id=@Model.getString($"flexCheckDefault{item.userID}")>
+
+                                                    </div>
+                                        }
+                                            </div>
+                                            <div class="modal-footer">
+
+                                                <button type="submit" class="btn btn-primary">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_setting_cap_nhat")</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">@TranslationService.GetText(Model.trans_g_on,"g_on_dong")</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                }
+                    </div>
+                    <table id="list-user" style="width:100%">
+                        <thead>
+
+                            <tr class="border-bottom">
+                                <th style="width:30% ">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_user_ho_va_ten")</th>
+                                <th style="width:30%">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_user_thong_tin_lien_lac")</th>
+                                <th style="width:30%">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_user_nhan_vien_truc_tiep")</th>
+                                <th style="width:10%">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in @Model.UserGroup)
+                    {
+                                <tr class="border-bottom">
+                                    <td>
+                                        <div class="user-member">
+                                            <div class="avatar avatar-list">
+                                                <img src="/img/profile.jpg" class="img-avatar">
+
+                                            </div>
+                                            <div class=text>
+                                                <div>  <a href=/user/@item.userName> <b class="fullName">@item.lastName @item.firstName</b></a></div>
+                                                <div>
+                                                    <b> @item.tag</b>&nbsp;·&nbsp;
+                                                    @{
+                                                WriteLiteral(Model.GetTitleNamex(item.titleID));
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="li ap-xdot">@item.email</div>
+                                        <div class="li ap-xdot">@item.phone</div>
+
+                                        <div class="li ap-xdot">
+                                            @{
+                                        WriteLiteral(item.dateOfBirth != null ? item.dateOfBirth.Value.ToString("dd/MM/yyyy") : "n/a");
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-member">
+                                            <div class="avatar avatar-list">
+                                                <img src="/img/profile.jpg">
+
+                                            </div>
+                                            <div class=text>
+                                                <div>  <a href=/user/@item.userName> <b class="fullName">@item.lastName @item.firstName</b></a></div>
+                                                <div>
+                                                    <b> @item.tag</b>&nbsp;·&nbsp; IT Staff
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    @if ((int.Parse(@Model.sUserRoleID)) == 1)
+                            {
+                                        <td>    <div class="text-center"><button class="btn btn-primary" type="button" data-toggle="modal" data-target="#@Model.getString($"deleteUserGroupModal{item.userID}")">@TranslationService.GetText(Model.trans_g_on,"g_on_xoa_thanh_vien")</button></div> </td>
+                                        <div class="modal fade" id=@Model.getString($"deleteUserGroupModal{item.userID}") tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <form method="post" asp-page-handler="DeleteUserGroupPage">
+                                                        <input type="hidden" asp-for="userID" value="@item.userID" />
+                                                        <input type="hidden" asp-for="groupID" value="@Model.GroupModel.groupID" />
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">@TranslationService.GetText(Model.trans_g_on,"g_on_xoa_thanh_vien")</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">@TranslationService.GetText(Model.trans_g_on,"g_on_thong_bao_xac_nhan_xoa") @item.email</div>
+
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn btn-primary">@TranslationService.GetText(Model.trans_g_on,"g_on_xoa")</button>
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">@TranslationService.GetText(Model.trans_g_on,"g_on_dong")</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                            }
+                                </tr>
+                    }
+                        </tbody>
+                    </table>
+    </div>
+    }
+}
+
+<div class="modal" id="NotificationModal" role="dialog">
+    <div id="ModalDialog" class="modal-dialog modal-dialog-scrollable" style="float:right;padding-top:50px;padding-bottom:0;margin:0 !important">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title" id="modalTitle">@TranslationService.GetText(Model.trans_g_on,"g_on_menu_notification") (15)</h4>
+            </div>
+            <div id="Containner-body" class="modal-body">
+                
+                    <li class="list-group-item border-0 align-items-start">
+                        <div class="avatar bg-success mr-3">
+                            <span class="avatar-content"><i data-feather="list"></i></span>
+                        </div>
+                        <div>
+                            <h5>Nhắc nhở 1</h5>
+                            <p>Bạn có một công việc cần hoàn thành</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item border-0 align-items-start">
+                        <div class="avatar bg-success mr-3">
+                            <span class="avatar-content"><i data-feather="list"></i></span>
+                        </div>
+                        <div>
+                            <h5>Nhắc nhở 2</h5>
+                            <p>Bạn có một công việc cần hoàn thành</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item border-0 align-items-start">
+                        <div class="avatar bg-success mr-3">
+                            <span class="avatar-content"><i data-feather="list"></i></span>
+                        </div>
+                        <div>
+                            <h5>Nhắc nhở 3</h5>
+                            <p>Bạn có một công việc cần hoàn thành</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item border-0 align-items-start">
+                        <div class="avatar bg-success mr-3">
+                            <span class="avatar-content"><i data-feather="list"></i></span>
+                        </div>
+                        <div>
+                            <h5>Nhắc nhở 4</h5>
+                            <p>Bạn có một công việc cần hoàn thành</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item border-0 align-items-start">
+                        <div class="avatar bg-success mr-3">
+                            <span class="avatar-content"><i data-feather="list"></i></span>
+                        </div>
+                        <div>
+                            <h5>Nhắc nhở 5</h5>
+                            <p>Bạn có một công việc cần hoàn thành</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item border-0 align-items-start">
+                        <div class="avatar bg-success mr-3">
+                            <span class="avatar-content"><i data-feather="list"></i></span>
+                        </div>
+                        <div>
+                            <h5>Nhắc nhở 6</h5>
+                            <p>Bạn có một công việc cần hoàn thành</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item border-0 align-items-start">
+                        <div class="avatar bg-success mr-3">
+                            <span class="avatar-content"><i data-feather="list"></i></span>
+                        </div>
+                        <div>
+                            <h5>Nhắc nhở 7</h5>
+                            <p>Bạn có một công việc cần hoàn thành</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item border-0 align-items-start">
+                        <div class="avatar bg-success mr-3">
+                            <span class="avatar-content"><i data-feather="list"></i></span>
+                        </div>
+                        <div>
+                            <h5>Nhắc nhở 8</h5>
+                            <p>Bạn có một công việc cần hoàn thành</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item border-0 align-items-start">
+                        <div class="avatar bg-success mr-3">
+                            <span class="avatar-content"><i data-feather="list"></i></span>
+                        </div>
+                        <div>
+                            <h5>Nhắc nhở 9</h5>
+                            <p>Bạn có một công việc cần hoàn thành</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item border-0 align-items-start">
+                        <div class="avatar bg-success mr-3">
+                            <span class="avatar-content"><i data-feather="list"></i></span>
+                        </div>
+                        <div>
+                            <h5>Nhắc nhở 10</h5>
+                            <p>Bạn có một công việc cần hoàn thành</p>
+                        </div>
+                    </li>
+                
+            </div>
+            <div class="modal-footer" style="display:block">
+                <span>@TranslationService.GetText(Model.trans_g_on,"g_on_hien_thi_them_thong_bao")</span>
+            </div>
+        </div>
+    </div>
+</div>
